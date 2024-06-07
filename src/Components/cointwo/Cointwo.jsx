@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import "./coin.css";
+import React, { useState, useEffect, useContext } from "react";
+import "./cointwo.css";
 import { useParams } from "react-router-dom";
+import Linecharttwo from "../linecharttwo/Linecharttwo";
 import { CoinContext } from "../../context/CoinContext";
-import Linechart from "../../Components/linechart/Linechart";
 
-const Coin = () => {
-  const [coindata, setcoindata] = useState();
-  const [historical, sethistorical] = useState();
-  const { currency } = useContext(CoinContext);
+const Cointwo = () => {
   const { coinId } = useParams();
-  // console.log(coindata);
-  // console.log(historical);
+  const { currency } = useContext(CoinContext);
+  const [data, setdata] = useState();
+  const [historicdata, sethistoricdata] = useState();
+  //   console.log(data);
+
   const fatchdata = async () => {
     const options = {
       method: "GET",
@@ -22,11 +22,11 @@ const Coin = () => {
 
     fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`, options)
       .then((response) => response.json())
-      .then((response) => setcoindata(response))
+      .then((response) => setdata(response))
       .catch((err) => console.error(err));
   };
 
-  const fatchhisroricaldata = async () => {
+  const fatchhistoricdata = async () => {
     const options = { method: "GET", headers: { accept: "application/json" } };
 
     fetch(
@@ -34,72 +34,62 @@ const Coin = () => {
       options
     )
       .then((response) => response.json())
-      .then((response) => sethistorical(response))
+      .then((response) => sethistoricdata(response))
       .catch((err) => console.error(err));
   };
-
   useEffect(() => {
     fatchdata();
-    fatchhisroricaldata();
+    fatchhistoricdata();
   }, [currency]);
-
-  if (coindata && historical) {
+  if (data) {
     return (
       <div className="coin">
         <div className="coin_name">
-          <img src={coindata.image.large} alt="img" />
+          <img src={data.image.large} alt="" />
           <p>
             <b>
-              {coindata.name} ({currency.symbol.toUpperCase()})
+              {data.name} {currency.symbol}
             </b>
           </p>
         </div>
         <div className="coin_chart">
-          <Linechart historical={historical} />
+          <Linecharttwo historicdata={historicdata} />
         </div>
-        <div className="coin_info">
+        <div className="coin_details">
           <ul>
-            <li>Crypto market rank</li>
-            <li>{coindata.market_cap_rank}</li>
+            <li>Crtpto market rank</li>
+            <li>{data.market_cap_rank}</li>
           </ul>
           <ul>
             <li>Current price</li>
             <li>
-              {currency.symbol}
-              {coindata.market_data.current_price[currency.name].toLocaleString()}
+              {currency.symbol}{" "}
+              {data.market_data.current_price[currency.name].toLocaleString()}
             </li>
           </ul>
           <ul>
             <li>Market cap</li>
             <li>
               {currency.symbol}
-              {coindata.market_data.market_cap[currency.name].toLocaleString()}
+              {data.market_data.market_cap[currency.name].toLocaleString()}
             </li>
           </ul>
           <ul>
             <li>24 Hour High</li>
-            <li>
-              {currency.symbol}
-              {coindata.market_data.high_24h[currency.name].toLocaleString()}
-            </li>
+            <li>{data.market_data.high_24h[currency.name].toLocaleString()}</li>
           </ul>
           <ul>
-            <li>24 Hour Low </li>
-            <li>
-              {currency.symbol}
-              {coindata.market_data.low_24h[currency.name].toLocaleString()}
-            </li>
+            <li>24 Hour Low</li>
+            <li>{data.market_data.low_24h[currency.name].toLocaleString()}</li>
           </ul>
         </div>
       </div>
     );
   } else {
-    return (
-      <div className="spinner">
-        <div className="spin"></div>
-      </div>
-    );
+    <div className="spinner">
+      <div className="spin"></div>
+    </div>;
   }
 };
 
-export default Coin;
+export default Cointwo;

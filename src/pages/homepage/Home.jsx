@@ -69,7 +69,7 @@ const Home = () => {
           <p className="marketcap"> Market Place</p>
         </div>
         {display.slice(0, 10).map((item, i) => (
-          <Link to={`/coin/${item.id}`} className="table_layout" key={i}>
+          <Link to={`/cointwo/${item.id}`} className="table_layout" key={i}>
             <p>{item.market_cap_rank}</p>
             <div>
               <img src={item.image} alt="img" />
